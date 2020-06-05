@@ -18,8 +18,14 @@ void print_matrix(const vector<vector<T>>& mat) {
 }
 
 
-int main() {
-    static const vector<int>& coeff = {1, 2, 5, 4, 9};
+int main(const int argc, const char** argv) {
+
+    // Create coeff vector from command-line args
+    vector<int> coeff;
+    for (size_t i = 1; i < argc; ++i) {
+        coeff.push_back(atoi(argv[i]));
+    }
+
     const size_t row_size = coeff.size() / 2 + 1;
 
     // Create matrix to hold value
