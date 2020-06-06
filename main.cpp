@@ -6,7 +6,6 @@
 
 using namespace std;
 
-
 template<typename T>
 void print_matrix(const vector<vector<T>>& mat) {
     for (const auto& row : mat) {
@@ -21,15 +20,15 @@ void print_matrix(const vector<vector<T>>& mat) {
 int main(const int argc, const char** argv) {
 
     // Create coeff vector from command-line args
-    vector<int> coeff;
+    vector<double> coeff;
     for (size_t i = 1; i < argc; ++i) {
-        coeff.push_back(atoi(argv[i]));
+        coeff.push_back(atof(argv[i]));
     }
 
     const size_t row_size = coeff.size() / 2 + 1;
 
     // Create matrix to hold value
-    vector<vector<int>> mat;
+    vector<vector<double>> mat;
     mat.reserve(coeff.size());
 
     for (auto& row : mat) {
@@ -89,9 +88,24 @@ int main(const int argc, const char** argv) {
 
     // Determine stability
 
-    bool prev_sign = coeff[coeff.size() - 1] > 0;
+    bool prev_sign = coeff[0] > 0;
     int sign_changes = 0;
     int zeros_found = 0;
+
+
+    for (const auto& val : coeff) {
+        auto current_sign = val > 0;
+
+        if (current_sign != prev_sign) {
+            ++sign_changes;
+        }
+
+        if (val == 0) {
+            ++zeros_found;
+        }
+
+        prev_sign = current_sign;
+    }
 
     for (size_t row_i = 2; row_i < coeff.size(); ++row_i) {
         auto column_limit = (row_i == coeff.size() - 1) ? 1 : mat[row_i].size() - 1;
@@ -103,10 +117,11 @@ int main(const int argc, const char** argv) {
             if (val == 0) {
                 // cout << "zero found at: " << row_i << "," << val_i << endl;
 
-                zeros_found++;
+                ++zeros_found;
             } else if (sign != prev_sign) {
                 // cout << "Sign change at: " << row_i << "," << val_i << endl;
-                sign_changes++;
+                
+                ++sign_changes;
             }
 
             prev_sign = sign;
